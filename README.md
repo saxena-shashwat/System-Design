@@ -1,23 +1,57 @@
-# WirelessLab — WiFi Systems Analysis Platform
+Communication Systems — Learning Lab
+This repository is a structured archive of my hands‑on learning in communication systems, networking, and signal processing. I use experiments, small projects, and notes to explore concepts such as networking (routers and wireless protocols), DSP, ADCs, modulation/demodulation, and related coding work. The goal is to keep a clear, reproducible log of experiments and resources I can revisit while studying and building projects.
 
+What you’ll find here
+Experimental writeups and results for hardware and software projects.
 
-## Overview
-WirelessLab is my undergraduate first year engineering project; it mainly focuses on reusing old wifi routers to build an isolated local network.
+Code used to generate or analyze signals, process data, or control devices.
 
-Theoretical concepts like RF communication, TCP/IP networking, and embedded systems are applied to build a robust multi-router mesh.
+Lab notes, block diagrams, schematics, and photos that document setups.
 
-## Objectives
+Short tutorials and references that summarize key concepts I learn.
 
-- Experimentally characterise WiFi signal propagation (RSSI vs. distance, obstacle attenuation)
-- Analyse channel interference patterns across non-overlapping 2.4 GHz channels
-- Measure throughput and latency degradation across single and multi-hop wireless links
-- Configure and study repeater/WDS/bridge topologies using consumer-grade routers
-- Capture and analyse local network traffic at the packet level
-- Visualise network performance data through custom dashboards and topology diagrams
-- Explore OpenWRT firmware for router-level programmability and advanced configuration
+Scripts and configs for reproducible projects (firmware, router setups, simulation notebooks).
 
+Current areas of focus
+Networking basics and home router experiments (2.4 GHz hardware, firmware, SSID/MTU, packet captures).
 
+Digital Signal Processing (sampling, filters, FFTs, windowing, spectral analysis).
 
+ADCs and data acquisition (sampling rates, quantization, anti‑aliasing).
+
+Modulation and demodulation (AM, FM, ASK/FSK/PSK), baseband and passband processing.
+
+MATLAB / Python / C code for simulating and processing signals.
+
+Example experiments
+Router experiments: flashing/reading firmware, changing channel/Tx power, capturing packets with Wireshark, testing throughput and latency under interference.
+
+ADC bench tests: characterizing noise floor, effective number of bits (ENOB), and SNR using known input signals.
+
+DSP notebooks: implementing FIR/IIR filters, window comparisons, and FFT visualizations in Python.
+
+Modulation demos: generate and demodulate ASK/FSK/PSK signals and visualize spectra and eye diagrams.
+
+How to use this repo
+Browse the /experiments folder for step‑by‑step writeups and instrumentation notes.
+
+Run notebooks in /notebooks to reproduce simulations and plots (requires Python 3.10+, numpy, scipy, matplotlib, jupyter).
+
+Check /hardware for PCB schematics, breadboard photos, and wiring diagrams.
+
+See /code for firmware, Python scripts, and small C programs used in experiments.
+
+Tools and dependencies
+Python: numpy, scipy, matplotlib, pandas, jupyter, librosa (optional for audio)
+
+Wireshark, tcpdump for packet capture and analysis
+
+GNU Radio (optional) or MATLAB/Octave for signal processing experiments
+
+common microcontroller toolchains (PlatformIO, avr‑gcc, stm32cube) if using MCU boards
+
+Contributing (personal)
+This is a personal learning log. I will maintain consistent structure and documented steps so each experiment is reproducible. Notes and scripts will include required hardware, software versions, and command examples.
 
 ## Author
 
