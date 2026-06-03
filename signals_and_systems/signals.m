@@ -1,5 +1,5 @@
 % different signals and how to use them in matlab
-%{
+
 % unit step (@ x = 0)
 x = linspace(-10, 10);
 u = (x>=0);
@@ -44,14 +44,17 @@ axis([0 20 0 1]);
 x = linspace(0, 10, 1000);
 a = double((sin(pi*x)>=0));
 
+figure(5)
 plot(x, a);
 title('square wave');
 axis([0 10 -0.5 1.5]);
-%}
+
 
 % square pulse
 x = linspace(0, 10, 1000);
 p = (x>2) & (x<5);
 
+figure(6);
 plot(x, p);
+title('square pulse');
 axis([0 10 -0.5 1.5]);
