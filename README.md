@@ -9,7 +9,11 @@ This repository is a structured archive of my hands-on learning in communication
 - Mathematical Modelling of Signals and Systems
 - Control System Involving an UAV (Mathematical Model)
 
-
+# Mathematical Models
+The mathematical models in this repository include models of the following made in matlab,
+- Basic signals (Unit impulse, Square Pulse, Exponential Decay etc)
+- LTI State Space Oscillator
+- Moving Mean Low Pass Filter (State Space Machine)
 
 # Contributing (Personal)
 
