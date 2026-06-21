@@ -35,19 +35,22 @@ Below are examples of the system outputs demonstrating the mathematical manipula
 ### 1. Echo and Reverb (Time Domain Decay)
 *Demonstrates the exponential decay tail in the reverb output, alongside the distinct secondary impulse in the echo output.*
 
-![Echo and Reverb Plot](<.\signals-and-systems\Reports\echo and reverb test.png>) 
+![Echo and Reverb Plot](<img width="960" height="600" alt="Screenshot 2026-06-21 102340" src="https://github.com/user-attachments/assets/13df9ea0-5af2-4cf4-a242-0654792e1227" />
+) 
 
 
 ### 2. Amplitude Modulation
 *Displays the high-frequency carrier wave successfully modulated by the time-domain source message signal.*
 
-![AM Modulated Wave](<.\signals-and-systems\Reports\amplitude modulation subplot.png>)
+![AM Modulated Wave](<img width="1051" height="690" alt="amplitude modulation subplot" src="https://github.com/user-attachments/assets/d5bb913f-a683-418f-8663-81840667950a" />
+)
 
 
 ### 3. Frequency Spectrum Analysis (FFT)
 *Transforms the discrete signals into the frequency domain to verify the efficacy of the implemented filtering operations.*
 
-![Frequency Domain Plot](<.\signals-and-systems\Reports\frequency-domain-noise-filters.png>)
+![Frequency Domain Plot](<img width="1059" height="699" alt="moving-avg-fft" src="https://github.com/user-attachments/assets/3f7b6740-7acd-487f-a207-69cf774f3ae9" />
+)
 
 ---
 
