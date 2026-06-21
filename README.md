@@ -1,26 +1,61 @@
-# Communication Systems — Learning Lab
+# Communication Systems & Signal Processing
 
-This repository is a structured archive of my hands-on learning in communication systems, networking, and signal processing. I use experiments, small projects, and notes to explore concepts such as networking (routers and wireless protocols), DSP, ADCs, modulation/demodulation, and signals and systems. The goal is to keep a clear, reproducible log of experiments and resources I can revisit while studying and building projects.
+![MATLAB](https://img.shields.io/badge/MATLAB-MathWorks-orange?style=for-the-badge&logo=mathworks)
+![Signal Processing](https://img.shields.io/badge/Signal%20Processing-Audio-blue?style=for-the-badge)
 
-## Current areas of focus
+A MATLAB-based framework for the mathematical modeling of communication systems, focusing on end-to-end audio signal processing, digital filtering, and wave modulation.
 
-- Networking basics and home router experiments (2.4 GHz hardware, firmware, SSID/MTU, packet captures).
-- Signals and Systems
-- Mathematical Modelling of Signals and Systems
-- Control System Involving an UAV (Mathematical Model)
+**Note:** This project is being developed as part of an ongoing internship at the **Indian Institute of Information Technology (IIIT) Vadodara**, under the mentorship of **Dr. Jignesh Bhatt**.
 
-# Mathematical Models
-The mathematical models in this repository include models of the following made in matlab,
-- Basic signals (Unit impulse, Square Pulse, Exponential Decay etc)
-- LTI State Space Oscillator
-- Moving Mean Low Pass Filter (State Space Machine)
+---
 
-# Contributing (Personal)
+## Features and Core Models
 
-This is a personal learning log. I will maintain consistent structure and documented steps so each experiment is reproducible. Notes and scripts will include required hardware, software versions, and command examples.
+This repository contains MATLAB scripts developed to simulate real-world signal behavior fundamentally, minimizing the use of high-level abstract functions. The key implementations include:
 
-## Author
+### 1. Audio Effects and Space Simulation
+Algorithms designed to simulate the physics of sound in physical environments:
+* **`audioEcho.m`**: Generates distinct, delayed sound reflections (Echo).
+* **`audioReverb.m`**: Simulates complex, overlapping reflections of sound within an acoustic space (Reverberation).
+* **`unitDelay.m`**: Introduces precise time-domain unit delays to discrete signals.
+* **`audioStableNoise.m`**: Generates and introduces stable background noise for system stress-testing and filter evaluation.
 
-**Shashwat**  
-B.Tech, Electronics & Communication Engineering — First Year, Nirma University, Ahmedabad  
-Project started: Summer 2026
+### 2. Signal Modulation
+* **`AMEncoderSystem.m`**: A complete Amplitude Modulation (AM) system that maps an input baseband/message signal onto a high-frequency carrier wave for transmission.
+
+### 3. Audio Filtering
+Finite Impulse Response (FIR) filter implementations utilizing windowing techniques (e.g., Hamming windows):
+* **`audioLowPass.m`**: Attenuates high-frequency noise, allowing baseband frequencies to pass.
+* **`audioHighPass.m`**: Removes low-frequency interference, isolating higher frequency components.
+* **`movingAverageLowPassFilter.m` & `audioLowPassMovingAvg.m`**: Applies a moving average algorithm to smooth signal fluctuations in the time domain.
+
+---
+
+## Visualizations and System Outputs
+
+Below are examples of the system outputs demonstrating the mathematical manipulation and analysis of the audio samples:
+
+### 1. Echo and Reverb (Time Domain Decay)
+*Demonstrates the exponential decay tail in the reverb output, alongside the distinct secondary impulse in the echo output.*
+
+![Echo and Reverb Plot](<.\signals-and-systems\Reports\echo and reverb test.png>) 
+*(Replace with the link to your VS code / figure screenshot)*
+
+### 2. Amplitude Modulation
+*Displays the high-frequency carrier wave successfully modulated by the time-domain source message signal.*
+
+![AM Modulated Wave](<.\signals-and-systems\Reports\amplitude modulation subplot.png>)
+*(Replace with the link to your AM plot)*
+
+### 3. Frequency Spectrum Analysis (FFT)
+*Transforms the discrete signals into the frequency domain to verify the efficacy of the implemented filtering operations.*
+
+![Frequency Domain Plot](<.\signals-and-systems\Reports\frequency-domain-noise-filters.png>)
+
+---
+
+## Usage Instructions
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/saxena-shashwat/Communication-Systems.git
