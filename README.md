@@ -1,8 +1,5 @@
 # Communication Systems & Signal Processing
 
-![MATLAB](https://img.shields.io/badge/MATLAB-MathWorks-orange?style=for-the-badge&logo=mathworks)
-![Signal Processing](https://img.shields.io/badge/Signal%20Processing-Audio-blue?style=for-the-badge)
-
 A MATLAB-based framework for the mathematical modeling of communication systems, focusing on end-to-end audio signal processing, digital filtering, and wave modulation.
 
 **Note:** This project is being developed as part of an ongoing internship at the **Indian Institute of Information Technology (IIIT) Vadodara**, under the mentorship of **Dr. Jignesh Bhatt**.
