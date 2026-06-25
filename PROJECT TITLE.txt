@@ -1,0 +1,380 @@
+PROJECT TITLE:
+Autonomous Reinforcement Learning Vehicle
+(1/10 Scale Autonomous Ground Vehicle)
+
+CURRENT STATUS:
+- Mathematical modeling completed
+- Initial control-system design completed
+- Simulink validation completed
+- ROS 2 environment installed and tested
+- Hardware architecture finalized
+- Senior Design Proposal completed
+- Beamer presentation completed
+- Waiting for budget approval and hardware procurement
+- Physical assembly not yet started
+
+========================================================
+PROJECT OBJECTIVE
+========================================================
+
+The objective is to build a small autonomous vehicle capable of navigating
+through an environment using computer vision and Reinforcement Learning.
+
+The vehicle follows a hierarchical control architecture.
+
+The Reinforcement Learning model is responsible only for high-level decision
+making.
+
+Real-time motor control, sensing, odometry, and stabilization are delegated
+to a dedicated embedded controller.
+
+This architecture is motivated by the fact that Linux-based SBCs such as the
+Raspberry Pi are not deterministic real-time systems and therefore should not
+directly control physical actuators.
+
+The design intentionally separates:
+
+    Brain  = Decision Making
+    Spinal Cord = Real-Time Control
+
+========================================================
+SYSTEM ARCHITECTURE
+========================================================
+
+HIGH-LEVEL CONTROLLER
+
+Hardware:
+- Raspberry Pi
+
+Responsibilities:
+- Ubuntu Linux
+- ROS 2
+- Computer Vision
+- Reinforcement Learning Inference
+- Navigation Planning
+- Path Decision Making
+
+Outputs:
+- Desired vehicle velocity
+- Desired steering commands
+
+The Raspberry Pi never directly drives motors.
+
+========================================================
+
+LOW-LEVEL CONTROLLER
+
+Hardware:
+- ESP32-S3-WROOM-1
+
+Reason for selecting ESP32-S3:
+
+1. Native USB-OTG support
+   Enables direct micro-ROS communication.
+
+2. PCNT hardware modules
+   Counts quadrature encoder pulses without significant CPU overhead.
+
+3. High-rate deterministic control loops.
+
+Responsibilities:
+- Real-time motor control
+- Encoder processing
+- Odometry generation
+- PID execution
+- Safety watchdog
+- PWM generation
+
+========================================================
+COMMUNICATION ARCHITECTURE
+========================================================
+
+Middleware:
+- ROS 2 (Humble/Lyrical)
+
+Bridge:
+- micro-ROS
+
+Physical Link:
+- Native USB connection between Raspberry Pi and ESP32-S3
+
+ROS Topics:
+
+Published by Raspberry Pi:
+
+/cmd_vel
+
+Contains:
+- Desired linear velocity
+- Desired angular velocity
+
+Subscribed by ESP32:
+
+/cmd_vel
+
+Published by ESP32:
+
+/odom
+
+Contains:
+- Measured wheel velocity
+- Position estimates
+- Vehicle odometry
+
+========================================================
+ACTUATION SYSTEM
+========================================================
+
+Drive System:
+
+- Two DC motors
+- Differential drive configuration
+
+Steering System:
+
+- Dedicated DC motor
+- AS5600 magnetic encoder
+- Closed-loop PID position control
+
+This effectively creates a custom servo actuator.
+
+Motor Driver:
+
+- TB6612FNG
+
+Input:
+- 3.3V PWM from ESP32
+
+Power Input:
+- 7.4V LiPo battery
+
+========================================================
+SENSING SYSTEM
+========================================================
+
+Vision:
+
+- Raspberry Pi Camera
+
+Drive Feedback:
+
+- Quadrature encoders
+- Wheel speed measurement
+- Odometry estimation
+
+Steering Feedback:
+
+- AS5600 magnetic encoder
+
+Provides:
+- Absolute steering angle
+
+========================================================
+POWER ARCHITECTURE
+========================================================
+
+Logic Supply:
+
+5V USB Power Bank
+
+Powers:
+- Raspberry Pi
+- ESP32-S3
+
+Motor Supply:
+
+7.4V LiPo Battery
+
+Powers:
+- TB6612FNG
+- Drive motors
+- Steering motor
+
+Grounds:
+- Common ground reference
+
+Design Goal:
+
+Prevent drivetrain back-EMF and high-current transients from causing
+brownouts or resets on logic hardware.
+
+========================================================
+CONTROL THEORY
+========================================================
+
+Motor Model:
+
+Approximated as:
+
+I*s² + b*s
+
+where
+
+I = rotational inertia
+b = viscous damping
+
+The plant behaves as a Type-1 system.
+
+Control Design:
+
+Primary Controller:
+PD
+
+Initial Simulink Tune:
+
+P = 2.0
+I = 0
+D = 0.75
+
+Design Targets:
+
+Natural Frequency:
+ωn = 4
+
+Damping Ratio:
+ζ = 1
+(critical damping)
+
+Reasoning:
+
+The plant already contains an integrating effect.
+
+Steady-state performance requirements are satisfied using PD control.
+
+Integral action is currently unnecessary and may reduce stability margins
+if poorly tuned.
+
+========================================================
+PHYSICAL TUNING PLAN
+========================================================
+
+After assembly:
+
+1. Identify real plant dynamics.
+2. Measure encoder response.
+3. Find Ultimate Gain (Ku).
+4. Apply Ziegler-Nichols methodology.
+5. Refine experimentally.
+
+Simulation gains are only the starting point.
+
+========================================================
+PERFORMANCE REQUIREMENTS
+========================================================
+
+Control Loop Frequency:
+
+100 Hz
+
+Wheel-Speed Error:
+
+±0.1 m/s
+
+Communication Latency:
+
+≤ 50 ms round trip
+
+Obstacle Detection Range:
+
+≥ 1.0 meter
+
+Minimum Safety Clearance:
+
+≥ 15 cm
+
+========================================================
+SAFETY SYSTEM
+========================================================
+
+ESP32 watchdog timer:
+
+500 ms timeout
+
+Failure Condition:
+
+No valid command received from Raspberry Pi.
+
+Response:
+
+- Set all PWM outputs to zero.
+- Stop propulsion motors.
+- Stop steering actuator.
+
+Goal:
+
+Fail-safe behavior during:
+- SBC crash
+- ROS failure
+- USB disconnect
+- RL software crash
+
+========================================================
+SOFTWARE STACK
+========================================================
+
+Operating System:
+
+Ubuntu Linux
+
+Middleware:
+
+ROS 2
+
+Languages:
+
+C++
+Python
+
+Tools:
+
+MATLAB
+Simulink
+Wokwi
+LaTeX Beamer
+
+========================================================
+COMPLETED WORK
+========================================================
+
+1. Mathematical plant modeling.
+2. Transfer-function derivation.
+3. Simulink validation.
+4. Initial PD controller design.
+5. ROS 2 installation.
+6. ROS publisher/subscriber testing.
+7. ESP32-S3 PWM verification in Wokwi.
+8. System architecture design.
+9. Hardware selection.
+10. Senior Design Proposal.
+11. Technical presentation.
+
+========================================================
+NEXT STEPS
+========================================================
+
+1. Procure hardware.
+2. Assemble drivetrain.
+3. Mount sensors.
+4. Implement quadrature encoder interrupts.
+5. Implement odometry.
+6. Implement micro-ROS communication.
+7. Map /cmd_vel messages to wheel commands.
+8. Tune physical controller.
+9. Integrate RL model.
+10. Conduct autonomous testing.
+
+========================================================
+ENGINEERING PHILOSOPHY
+========================================================
+
+The RL model should never directly command motor voltages.
+
+AI determines intent.
+
+Embedded control determines execution.
+
+The Raspberry Pi decides:
+"What should the vehicle do?"
+
+The ESP32 decides:
+"How should the motors move to achieve it safely and accurately?"
