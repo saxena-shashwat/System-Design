@@ -1,6 +1,6 @@
-# Communication Systems & Signal Processing
+# System Design
 
-A MATLAB-based framework for the mathematical modeling of communication systems, focusing on end-to-end audio signal processing, digital filtering, and wave modulation.
+A MATLAB-based framework for the mathematical modeling of systems, focusing on end-to-end audio signal processing, digital filtering, wave modulation and the star of the show, flight controller for a vision based helicopter system.
 
 **Note:** This project is being developed as part of an ongoing internship at the **Indian Institute of Information Technology (IIIT) Vadodara**, under the mentorship of **Dr. Jignesh Bhatt**.
 
