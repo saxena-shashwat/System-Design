@@ -1,6 +1,6 @@
-# Communication Systems & Signal Processing
+# System Design
 
-A MATLAB-based framework for the mathematical modeling of communication systems, focusing on end-to-end audio signal processing, digital filtering, and wave modulation.
+A MATLAB-based framework for the mathematical modeling of systems, focusing on end-to-end audio signal processing, digital filtering, wave modulation and the star of the show, flight controller for a vision based helicopter system.
 
 **Note:** This project is being developed as part of an ongoing internship at the **Indian Institute of Information Technology (IIIT) Vadodara**, under the mentorship of **Dr. Jignesh Bhatt**.
 
@@ -53,6 +53,12 @@ Below are examples of the system outputs demonstrating the mathematical manipula
 )
 
 ---
+
+# Vision Helicopter System
+A robust low level system desigend to take inputs from either the user or primarily a vision based RL model. The flight controller system implements PID setpoint tracking and full state LQR loop.
+
+The PID loop is responsible for the alitude control, and velocity to angle (pitch/roll/yaw) conversion. The single output outer loop is perfectly handled by the PID controller. 
+The LQR on the other hand is responsible for the inner loop, converting angles (roll/pitch/yaw) and the angle rates (p, q, r) into meaningful attitude values (torque and thrust). Since the outer loop involves several variables, 3 different LQR loops are to be implemented, each one of these loops is a 2 state, 1 control LQR loop responsible for thrust in one axis of rotation. The key benefit of using LQR is that it allows us to optimise the feedback according to the plant model.
 
 ## Usage Instructions
 
