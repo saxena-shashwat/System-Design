@@ -97,9 +97,9 @@ static void printTelemetry()
   // Fixed-width row
   char buf[128];
   snprintf(buf, sizeof(buf),
-    "| %6d | %+8d | %+8d | %+8d | %9d | %+8d | %+8d | %+8d |",
-    (int)simT, (int)(pitch_deg*1000), (int)(roll_deg*1000), (int)(yaw_deg*1000), 
-    (int)(altitude*1000), (int)(alt_rate*1000), (int)(vx*1000), (int)(vy*1000));
+    "| %6.1f | %+8.3f | %+8.3f | %+8.3f | %9.3f | %+8.3f | %+8.3f | %+8.3f |",
+    simT, pitch_deg, roll_deg, yaw_deg, 
+    altitude, alt_rate, vx, vy);
   Serial.println(buf);
 }
 
