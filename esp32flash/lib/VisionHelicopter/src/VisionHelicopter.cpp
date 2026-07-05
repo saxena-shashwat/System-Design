@@ -698,7 +698,7 @@ void VisionHelicopter::initialize()
                     (&(&VisionHelicopter_M)->intgData));
   rtsiSetSolverName(&(&VisionHelicopter_M)->solverInfo,"ode3");
   (&VisionHelicopter_M)->setTPtr(&(&VisionHelicopter_M)->Timing.tArray[0]);
-  (&VisionHelicopter_M)->Timing.stepSize0 = 1.3;
+  (&VisionHelicopter_M)->Timing.stepSize0 = 0.01;
 
   // InitializeConditions for TransferFcn: '<S5>/Low Pass Filter'
   VisionHelicopter_X.LowPassFilter_CSTATE = 0.0;
