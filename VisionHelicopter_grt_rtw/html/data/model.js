@@ -1,1 +1,0 @@
-var modelInfo = {model:"VisionHelicopter"};var modelHierarchy=[{model:"VisionHelicopter",relativePath:"_internal.html",parent:"null"},];var AddCode = true;var ProtectedModel = false;
