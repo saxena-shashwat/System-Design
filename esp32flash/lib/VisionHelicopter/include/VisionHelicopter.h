@@ -73,6 +73,7 @@ class VisionHelicopter final
   // Block states (default storage) for system '<Root>'
   
   // Tunable parameters
+  // Tunable parameters
   struct P_VisionHelicopter_T {
     real_T LowPass_Filter_Coef = 0.83333333333333337;
     real_T PitchRoll_Kp = 7.0711;
@@ -86,7 +87,7 @@ class VisionHelicopter final
     real_T Filter_Coef = 100.0;
     real_T Alt_Filter_Coef = 2.0;
     real_T Alt_LowPass_Input = 5.0; // For 5m alt setpoint, DC gain = 10/2 = 5
-    real_T Vx_LowPass_Input = 0.0;  // Exposed Vx reference input
+    real_T Vx_LowPass_Input = 1.0;  // Exposed Vx reference input
     real_T Thrust_Transfer_Gain = -10000.0;
     real_T Gravity = 9.81;
     real_T Thrust_Base_Gain = 0.75;
