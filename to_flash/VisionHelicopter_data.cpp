@@ -3,7 +3,7 @@
 // course requirements at degree granting institutions only.  Not for
 // government, commercial, or other organizational use.
 //
-// File: VisionHelicopter_types.h
+// File: VisionHelicopter_data.cpp
 //
 // Code generated for Simulink model 'VisionHelicopter'.
 //
@@ -16,9 +16,17 @@
 // Code generation objectives: Unspecified
 // Validation result: Not run
 //
-#ifndef VisionHelicopter_types_h_
-#define VisionHelicopter_types_h_
-#endif                                 // VisionHelicopter_types_h_
+#include "VisionHelicopter.h"
+
+// Constant parameters (default storage)
+const VisionHelicopter::ConstP_VisionHelicopter_T VisionHelicopter_ConstP{
+  // Pooled Parameter (Expression: [0 1; 0 -0.01/0.03125];)
+  //  Referenced by:
+  //    '<Root>/Plant (Pitch)'
+  //    '<Root>/Plant (Roll)'
+
+  { 1.0, -0.32 }
+};
 
 //
 // File trailer for generated code.
