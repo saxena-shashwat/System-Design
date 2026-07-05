@@ -40,7 +40,7 @@ static VisionHelicopter::RT_MODEL_VisionHelicopter_T *rtm = nullptr;
 // We call model->step() every STEP_INTERVAL_MS.
 // Each call advances the simulated time by 1.3 s (model base step size).
 // -----------------------------------------------------------------------
-static const uint32_t STEP_INTERVAL_MS = 200;   // wall-clock rate (5 Hz)
+static const uint32_t STEP_INTERVAL_MS = 10;   // wall-clock rate (100 Hz)
 static uint32_t lastStepMs = 0;
 
 // -----------------------------------------------------------------------
@@ -132,7 +132,7 @@ void setup()
   Serial.println("    VisionHelicopter Simulink Model  |  ESP32 Runtime");
   Serial.println("============================================================");
   Serial.println("  Model:  ERT target, ODE3 solver");
-  Serial.println("  Step:   1.3 s / model step");
+  Serial.println("  Step:   0.01 s / model step");
   Serial.println("  Alt setpoint: ~5 m   Vx setpoint: ~1 m/s");
   Serial.println("  * Yaw = velocity heading (no explicit yaw model)");
   Serial.println("============================================================");
@@ -202,7 +202,10 @@ void loop()
       return;
     }
 
-    // Print telemetry
-    printTelemetry();
+    // Print telemetry at 10Hz (every 10th step)
+    static uint32_t stepCount = 0;
+    if (stepCount++ % 10 == 0) {
+      printTelemetry();
+    }
   }
 }
