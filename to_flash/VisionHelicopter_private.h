@@ -3,7 +3,7 @@
 // course requirements at degree granting institutions only.  Not for
 // government, commercial, or other organizational use.
 //
-// File: VisionHelicopter_types.h
+// File: VisionHelicopter_private.h
 //
 // Code generated for Simulink model 'VisionHelicopter'.
 //
@@ -16,9 +16,15 @@
 // Code generation objectives: Unspecified
 // Validation result: Not run
 //
-#ifndef VisionHelicopter_types_h_
-#define VisionHelicopter_types_h_
-#endif                                 // VisionHelicopter_types_h_
+#ifndef VisionHelicopter_private_h_
+#define VisionHelicopter_private_h_
+#include "rtwtypes.h"
+#include "VisionHelicopter_types.h"
+
+// private model entry point functions
+extern void VisionHelicopter_derivatives();
+
+#endif                                 // VisionHelicopter_private_h_
 
 //
 // File trailer for generated code.
