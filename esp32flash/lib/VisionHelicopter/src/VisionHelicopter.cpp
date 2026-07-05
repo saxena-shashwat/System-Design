@@ -137,9 +137,9 @@ void VisionHelicopter::step()
   //   Sum: '<S5>/Sum'
   //   TransferFcn: '<S5>/Low Pass Filter'
 
-  VisionHelicopter_B.RateLimiter = (0.83333333333333337 *
+  VisionHelicopter_B.RateLimiter = (VisionHelicopter_P.LowPass_Filter_Coef *
     VisionHelicopter_X.LowPassFilter_CSTATE -
-    VisionHelicopter_X.PlantPitch_CSTATE[0U]) * 7.0711 + -1.1909 *
+    VisionHelicopter_X.PlantPitch_CSTATE[0U]) * VisionHelicopter_P.PitchRoll_Kp + VisionHelicopter_P.PitchRoll_Kd *
     VisionHelicopter_X.PlantPitch_CSTATE[1U];
 
   // RateLimiter: '<S5>/Rate Limiter' incorporates:
@@ -156,7 +156,7 @@ void VisionHelicopter::step()
         VisionHelicopter_B.RateLimiter = VisionHelicopter_DW.PrevY;
       }
     } else {
-      riseValLimit = rtb_thrustfinal * 3.0;
+      riseValLimit = rtb_thrustfinal * VisionHelicopter_P.RateLimit_Rise;
       deltaT_tmp = VisionHelicopter_B.RateLimiter - VisionHelicopter_DW.PrevY;
       if (deltaT_tmp > riseValLimit) {
         // RateLimiter: '<S5>/Rate Limiter'
@@ -164,7 +164,7 @@ void VisionHelicopter::step()
           riseValLimit;
         limitedCache = true;
       } else {
-        rtb_thrustfinal *= -3.0;
+        rtb_thrustfinal *= -VisionHelicopter_P.RateLimit_Rise;
         if (deltaT_tmp < rtb_thrustfinal) {
           // RateLimiter: '<S5>/Rate Limiter'
           VisionHelicopter_B.RateLimiter = VisionHelicopter_DW.PrevY +
@@ -184,12 +184,12 @@ void VisionHelicopter::step()
   // End of RateLimiter: '<S5>/Rate Limiter'
 
   // Saturate: '<S5>/Saturation'
-  if (VisionHelicopter_B.RateLimiter > 1.5) {
+  if (VisionHelicopter_B.RateLimiter > VisionHelicopter_P.Sat_Upper) {
     // Saturate: '<S5>/Saturation'
-    VisionHelicopter_B.Saturation = 1.5;
-  } else if (VisionHelicopter_B.RateLimiter < -1.5) {
+    VisionHelicopter_B.Saturation = VisionHelicopter_P.Sat_Upper;
+  } else if (VisionHelicopter_B.RateLimiter < -VisionHelicopter_P.Sat_Upper) {
     // Saturate: '<S5>/Saturation'
-    VisionHelicopter_B.Saturation = -1.5;
+    VisionHelicopter_B.Saturation = -VisionHelicopter_P.Sat_Upper;
   } else {
     // Saturate: '<S5>/Saturation'
     VisionHelicopter_B.Saturation = VisionHelicopter_B.RateLimiter;
@@ -202,9 +202,9 @@ void VisionHelicopter::step()
   //   Sum: '<S6>/Sum'
   //   TransferFcn: '<S6>/Low Pass Filter'
 
-  VisionHelicopter_B.RateLimiter_e = (0.83333333333333337 *
+  VisionHelicopter_B.RateLimiter_e = (VisionHelicopter_P.LowPass_Filter_Coef *
     VisionHelicopter_X.LowPassFilter_CSTATE_b -
-    VisionHelicopter_X.PlantRoll_CSTATE[0U]) * 7.0711 + -1.1909 *
+    VisionHelicopter_X.PlantRoll_CSTATE[0U]) * VisionHelicopter_P.PitchRoll_Kp + VisionHelicopter_P.PitchRoll_Kd *
     VisionHelicopter_X.PlantRoll_CSTATE[1U];
 
   // RateLimiter: '<S6>/Rate Limiter' incorporates:
@@ -221,7 +221,7 @@ void VisionHelicopter::step()
         VisionHelicopter_B.RateLimiter_e = VisionHelicopter_DW.PrevY_p;
       }
     } else {
-      riseValLimit = rtb_thrustfinal * 3.0;
+      riseValLimit = rtb_thrustfinal * VisionHelicopter_P.RateLimit_Rise;
       deltaT_tmp = VisionHelicopter_B.RateLimiter_e -
         VisionHelicopter_DW.PrevY_p;
       if (deltaT_tmp > riseValLimit) {
@@ -230,7 +230,7 @@ void VisionHelicopter::step()
           riseValLimit;
         limitedCache = true;
       } else {
-        rtb_thrustfinal *= -3.0;
+        rtb_thrustfinal *= -VisionHelicopter_P.RateLimit_Rise;
         if (deltaT_tmp < rtb_thrustfinal) {
           // RateLimiter: '<S6>/Rate Limiter'
           VisionHelicopter_B.RateLimiter_e = VisionHelicopter_DW.PrevY_p +
@@ -250,12 +250,12 @@ void VisionHelicopter::step()
   // End of RateLimiter: '<S6>/Rate Limiter'
 
   // Saturate: '<S6>/Saturation'
-  if (VisionHelicopter_B.RateLimiter_e > 1.5) {
+  if (VisionHelicopter_B.RateLimiter_e > VisionHelicopter_P.Sat_Upper) {
     // Saturate: '<S6>/Saturation'
-    VisionHelicopter_B.Saturation_a = 1.5;
-  } else if (VisionHelicopter_B.RateLimiter_e < -1.5) {
+    VisionHelicopter_B.Saturation_a = VisionHelicopter_P.Sat_Upper;
+  } else if (VisionHelicopter_B.RateLimiter_e < -VisionHelicopter_P.Sat_Upper) {
     // Saturate: '<S6>/Saturation'
-    VisionHelicopter_B.Saturation_a = -1.5;
+    VisionHelicopter_B.Saturation_a = -VisionHelicopter_P.Sat_Upper;
   } else {
     // Saturate: '<S6>/Saturation'
     VisionHelicopter_B.Saturation_a = VisionHelicopter_B.RateLimiter_e;
@@ -267,16 +267,16 @@ void VisionHelicopter::step()
   //   Integrator: '<Root>/Integrator1'
   //   TransferFcn: '<S8>/Low Pass Filter'
 
-  VisionHelicopter_B.Sum = 0.83333333333333337 *
+  VisionHelicopter_B.Sum = VisionHelicopter_P.LowPass_Filter_Coef *
     VisionHelicopter_X.LowPassFilter_CSTATE_j -
     VisionHelicopter_X.Integrator1_CSTATE;
 
   // Integrator: '<S150>/Integrator'
   // Limited  Integrator
-  if (VisionHelicopter_X.Integrator_CSTATE >= 5.0) {
-    VisionHelicopter_X.Integrator_CSTATE = 5.0;
-  } else if (VisionHelicopter_X.Integrator_CSTATE <= -5.0) {
-    VisionHelicopter_X.Integrator_CSTATE = -5.0;
+  if (VisionHelicopter_X.Integrator_CSTATE >= VisionHelicopter_P.Integrator_Upper) {
+    VisionHelicopter_X.Integrator_CSTATE = VisionHelicopter_P.Integrator_Upper;
+  } else if (VisionHelicopter_X.Integrator_CSTATE <= -VisionHelicopter_P.Integrator_Upper) {
+    VisionHelicopter_X.Integrator_CSTATE = -VisionHelicopter_P.Integrator_Upper;
   }
 
   // Gain: '<S153>/Filter Coefficient' incorporates:
@@ -285,21 +285,21 @@ void VisionHelicopter::step()
   //   Sum: '<S145>/SumD'
 
   VisionHelicopter_B.FilterCoefficient = (0.0 * VisionHelicopter_B.Sum -
-    VisionHelicopter_X.Filter_CSTATE) * 100.0;
+    VisionHelicopter_X.Filter_CSTATE) * VisionHelicopter_P.Filter_Coef;
 
   // Sum: '<S4>/Sum' incorporates:
   //   SecondOrderIntegrator: '<Root>/z'
   //   TransferFcn: '<S4>/Low Pass Filter'
 
-  rtb_Sum_o = 2.0 * VisionHelicopter_X.LowPassFilter_CSTATE_c -
+  rtb_Sum_o = VisionHelicopter_P.Alt_Filter_Coef * VisionHelicopter_X.LowPassFilter_CSTATE_c -
     VisionHelicopter_X.z_CSTATE[0];
 
   // Integrator: '<S44>/Integrator'
   // Limited  Integrator
-  if (VisionHelicopter_X.Integrator_CSTATE_f >= 5.0) {
-    VisionHelicopter_X.Integrator_CSTATE_f = 5.0;
-  } else if (VisionHelicopter_X.Integrator_CSTATE_f <= -5.0) {
-    VisionHelicopter_X.Integrator_CSTATE_f = -5.0;
+  if (VisionHelicopter_X.Integrator_CSTATE_f >= VisionHelicopter_P.Integrator_Upper) {
+    VisionHelicopter_X.Integrator_CSTATE_f = VisionHelicopter_P.Integrator_Upper;
+  } else if (VisionHelicopter_X.Integrator_CSTATE_f <= -VisionHelicopter_P.Integrator_Upper) {
+    VisionHelicopter_X.Integrator_CSTATE_f = -VisionHelicopter_P.Integrator_Upper;
   }
 
   // Gain: '<S47>/Filter Coefficient' incorporates:
@@ -308,13 +308,13 @@ void VisionHelicopter::step()
   //   Sum: '<S39>/SumD'
 
   VisionHelicopter_B.FilterCoefficient_a = (0.0 * rtb_Sum_o -
-    VisionHelicopter_X.Filter_CSTATE_l) * 100.0;
+    VisionHelicopter_X.Filter_CSTATE_l) * VisionHelicopter_P.Filter_Coef;
 
   // Sum: '<S53>/Sum' incorporates:
   //   Gain: '<S49>/Proportional Gain'
   //   Integrator: '<S44>/Integrator'
 
-  VisionHelicopter_B.Sum_g = (3.0 * rtb_Sum_o +
+  VisionHelicopter_B.Sum_g = (VisionHelicopter_P.RateLimit_Rise * rtb_Sum_o +
     VisionHelicopter_X.Integrator_CSTATE_f) +
     VisionHelicopter_B.FilterCoefficient_a;
 
@@ -325,9 +325,9 @@ void VisionHelicopter::step()
   //   Sum: '<S4>/Sum1'
   //   TransferFcn: '<S4>/Transfer Fcn'
 
-  VisionHelicopter_B.RateLimiter_ey = ((-10000.0 *
-    VisionHelicopter_X.TransferFcn_CSTATE + 100.0 * VisionHelicopter_B.Sum_g) +
-    9.81) * 1.5 + 0.75 * VisionHelicopter_B.Sum_g;
+  VisionHelicopter_B.RateLimiter_ey = ((VisionHelicopter_P.Thrust_Transfer_Gain *
+    VisionHelicopter_X.TransferFcn_CSTATE + VisionHelicopter_P.Filter_Coef * VisionHelicopter_B.Sum_g) +
+    VisionHelicopter_P.Gravity) * VisionHelicopter_P.Sat_Upper + VisionHelicopter_P.Thrust_Base_Gain * VisionHelicopter_B.Sum_g;
 
   // RateLimiter: '<S4>/Rate Limiter'
   if (!(VisionHelicopter_DW.LastMajorTime_h == (rtInf))) {
@@ -341,7 +341,7 @@ void VisionHelicopter::step()
         VisionHelicopter_B.RateLimiter_ey = VisionHelicopter_DW.PrevY_h;
       }
     } else {
-      riseValLimit = rtb_thrustfinal * 60.0;
+      riseValLimit = rtb_thrustfinal * VisionHelicopter_P.Thrust_Rate_Rise;
       deltaT_tmp = VisionHelicopter_B.RateLimiter_ey -
         VisionHelicopter_DW.PrevY_h;
       if (deltaT_tmp > riseValLimit) {
@@ -352,7 +352,7 @@ void VisionHelicopter::step()
           riseValLimit;
         limitedCache = true;
       } else {
-        rtb_thrustfinal *= -60.0;
+        rtb_thrustfinal *= -VisionHelicopter_P.Thrust_Rate_Rise;
         if (deltaT_tmp < rtb_thrustfinal) {
           // Sum: '<S4>/thrust_total' incorporates:
           //   RateLimiter: '<S4>/Rate Limiter'
@@ -374,10 +374,10 @@ void VisionHelicopter::step()
   // End of RateLimiter: '<S4>/Rate Limiter'
 
   // Saturate: '<S4>/thrust final'
-  if (VisionHelicopter_B.RateLimiter_ey > 20.0) {
-    rtb_thrustfinal = 20.0;
-  } else if (VisionHelicopter_B.RateLimiter_ey < 2.0) {
-    rtb_thrustfinal = 2.0;
+  if (VisionHelicopter_B.RateLimiter_ey > VisionHelicopter_P.Thrust_Sat_Upper) {
+    rtb_thrustfinal = VisionHelicopter_P.Thrust_Sat_Upper;
+  } else if (VisionHelicopter_B.RateLimiter_ey < VisionHelicopter_P.Alt_Filter_Coef) {
+    rtb_thrustfinal = VisionHelicopter_P.Alt_Filter_Coef;
   } else {
     rtb_thrustfinal = VisionHelicopter_B.RateLimiter_ey;
   }
@@ -393,16 +393,16 @@ void VisionHelicopter::step()
   //   Sum: '<S8>/Sum1'
 
   deltaT_tmp = (((VisionHelicopter_B.Sum + VisionHelicopter_X.Integrator_CSTATE)
-                 + VisionHelicopter_B.FilterCoefficient) * 1.5 + 0.5 *
+                 + VisionHelicopter_B.FilterCoefficient) * VisionHelicopter_P.Sat_Upper + VisionHelicopter_P.Drag_Coef *
                 VisionHelicopter_X.Integrator1_CSTATE) / rtb_thrustfinal;
 
   // Saturate: '<S8>/Saturation'
-  if (deltaT_tmp > 0.87266) {
+  if (deltaT_tmp > VisionHelicopter_P.Pitch_Sat_Upper) {
     // Gain: '<S8>/final_pitch'
-    VisionHelicopter_B.final_pitch = -0.87266;
-  } else if (deltaT_tmp < -0.87266) {
+    VisionHelicopter_B.final_pitch = -VisionHelicopter_P.Pitch_Sat_Upper;
+  } else if (deltaT_tmp < -VisionHelicopter_P.Pitch_Sat_Upper) {
     // Gain: '<S8>/final_pitch'
-    VisionHelicopter_B.final_pitch = 0.87266;
+    VisionHelicopter_B.final_pitch = VisionHelicopter_P.Pitch_Sat_Upper;
   } else {
     // Gain: '<S8>/final_pitch'
     VisionHelicopter_B.final_pitch = -deltaT_tmp;
@@ -414,29 +414,29 @@ void VisionHelicopter::step()
   //   Integrator: '<Root>/Integrator1'
 
   VisionHelicopter_B.vy_dot = (-rtb_thrustfinal * std::sin
-    (VisionHelicopter_B.final_pitch) - 0.5 *
-    VisionHelicopter_X.Integrator1_CSTATE) / 1.5;
+    (VisionHelicopter_B.final_pitch) - VisionHelicopter_P.Drag_Coef *
+    VisionHelicopter_X.Integrator1_CSTATE) / VisionHelicopter_P.Sat_Upper;
 
   // MATLAB Function: '<Root>/MATLAB Function' incorporates:
   //   SecondOrderIntegrator: '<Root>/z'
 
-  VisionHelicopter_B.z_ddot = ((rtb_thrustfinal - 14.715) - 0.5 *
-    VisionHelicopter_X.z_CSTATE[1]) / 1.5;
+  VisionHelicopter_B.z_ddot = ((rtb_thrustfinal - VisionHelicopter_P.Hover_Thrust) - VisionHelicopter_P.Drag_Coef *
+    VisionHelicopter_X.z_CSTATE[1]) / VisionHelicopter_P.Sat_Upper;
 
   // Sum: '<S7>/Sum' incorporates:
   //   Integrator: '<Root>/vx_curr'
   //   TransferFcn: '<S7>/Low Pass Filter'
 
-  VisionHelicopter_B.Sum_d = 0.83333333333333337 *
+  VisionHelicopter_B.Sum_d = VisionHelicopter_P.LowPass_Filter_Coef *
     VisionHelicopter_X.LowPassFilter_CSTATE_d -
     VisionHelicopter_X.vx_curr_CSTATE;
 
   // Integrator: '<S97>/Integrator'
   // Limited  Integrator
-  if (VisionHelicopter_X.Integrator_CSTATE_k >= 5.0) {
-    VisionHelicopter_X.Integrator_CSTATE_k = 5.0;
-  } else if (VisionHelicopter_X.Integrator_CSTATE_k <= -5.0) {
-    VisionHelicopter_X.Integrator_CSTATE_k = -5.0;
+  if (VisionHelicopter_X.Integrator_CSTATE_k >= VisionHelicopter_P.Integrator_Upper) {
+    VisionHelicopter_X.Integrator_CSTATE_k = VisionHelicopter_P.Integrator_Upper;
+  } else if (VisionHelicopter_X.Integrator_CSTATE_k <= -VisionHelicopter_P.Integrator_Upper) {
+    VisionHelicopter_X.Integrator_CSTATE_k = -VisionHelicopter_P.Integrator_Upper;
   }
 
   // Gain: '<S100>/Filter Coefficient' incorporates:
@@ -445,7 +445,7 @@ void VisionHelicopter::step()
   //   Sum: '<S92>/SumD'
 
   VisionHelicopter_B.FilterCoefficient_h = (0.0 * VisionHelicopter_B.Sum_d -
-    VisionHelicopter_X.Filter_CSTATE_n) * 100.0;
+    VisionHelicopter_X.Filter_CSTATE_n) * VisionHelicopter_P.Filter_Coef;
 
   // Product: '<S7>/Divide' incorporates:
   //   Gain: '<S7>/F_drag'
@@ -457,16 +457,16 @@ void VisionHelicopter::step()
 
   deltaT_tmp = (((VisionHelicopter_B.Sum_d +
                   VisionHelicopter_X.Integrator_CSTATE_k) +
-                 VisionHelicopter_B.FilterCoefficient_h) * 1.5 + 0.5 *
+                 VisionHelicopter_B.FilterCoefficient_h) * VisionHelicopter_P.Sat_Upper + VisionHelicopter_P.Drag_Coef *
                 VisionHelicopter_X.vx_curr_CSTATE) / rtb_thrustfinal;
 
   // Saturate: '<S7>/Saturation'
-  if (deltaT_tmp > 0.87266) {
+  if (deltaT_tmp > VisionHelicopter_P.Pitch_Sat_Upper) {
     // Gain: '<S7>/final_pitch'
-    VisionHelicopter_B.final_pitch_b = -0.87266;
-  } else if (deltaT_tmp < -0.87266) {
+    VisionHelicopter_B.final_pitch_b = -VisionHelicopter_P.Pitch_Sat_Upper;
+  } else if (deltaT_tmp < -VisionHelicopter_P.Pitch_Sat_Upper) {
     // Gain: '<S7>/final_pitch'
-    VisionHelicopter_B.final_pitch_b = 0.87266;
+    VisionHelicopter_B.final_pitch_b = VisionHelicopter_P.Pitch_Sat_Upper;
   } else {
     // Gain: '<S7>/final_pitch'
     VisionHelicopter_B.final_pitch_b = -deltaT_tmp;
@@ -478,11 +478,11 @@ void VisionHelicopter::step()
   //   Integrator: '<Root>/vx_curr'
 
   VisionHelicopter_B.vx_dot = (-rtb_thrustfinal * std::sin
-    (VisionHelicopter_B.final_pitch_b) - 0.5 * VisionHelicopter_X.vx_curr_CSTATE)
-    / 1.5;
+    (VisionHelicopter_B.final_pitch_b) - VisionHelicopter_P.Drag_Coef * VisionHelicopter_X.vx_curr_CSTATE)
+    / VisionHelicopter_P.Sat_Upper;
 
   // Gain: '<S41>/Integral Gain'
-  VisionHelicopter_B.IntegralGain = 2.0 * rtb_Sum_o;
+  VisionHelicopter_B.IntegralGain = VisionHelicopter_P.Alt_Filter_Coef * rtb_Sum_o;
   if ((&VisionHelicopter_M)->isMajorTimeStep()) {
     // Update for RateLimiter: '<S5>/Rate Limiter' incorporates:
     //   RateLimiter: '<S4>/Rate Limiter'
@@ -542,12 +542,12 @@ void VisionHelicopter::VisionHelicopter_derivatives()
       VisionHelicopter_X.PlantPitch_CSTATE[1U];
   }
 
-  _rtXdot->PlantPitch_CSTATE[1U] += 32.0 * VisionHelicopter_B.Saturation;
+  _rtXdot->PlantPitch_CSTATE[1U] += VisionHelicopter_P.Plant_Actuator_Gain * VisionHelicopter_B.Saturation;
 
   // End of Derivatives for StateSpace: '<Root>/Plant (Pitch)'
 
   // Derivatives for TransferFcn: '<S5>/Low Pass Filter'
-  _rtXdot->LowPassFilter_CSTATE = -0.83333333333333337 *
+  _rtXdot->LowPassFilter_CSTATE = -VisionHelicopter_P.LowPass_Filter_Coef *
     VisionHelicopter_X.LowPassFilter_CSTATE;
   _rtXdot->LowPassFilter_CSTATE += VisionHelicopter_B.final_pitch_b;
 
@@ -559,12 +559,12 @@ void VisionHelicopter::VisionHelicopter_derivatives()
       VisionHelicopter_X.PlantRoll_CSTATE[1U];
   }
 
-  _rtXdot->PlantRoll_CSTATE[1U] += 32.0 * VisionHelicopter_B.Saturation_a;
+  _rtXdot->PlantRoll_CSTATE[1U] += VisionHelicopter_P.Plant_Actuator_Gain * VisionHelicopter_B.Saturation_a;
 
   // End of Derivatives for StateSpace: '<Root>/Plant (Roll)'
 
   // Derivatives for TransferFcn: '<S6>/Low Pass Filter'
-  _rtXdot->LowPassFilter_CSTATE_b = -0.83333333333333337 *
+  _rtXdot->LowPassFilter_CSTATE_b = -VisionHelicopter_P.LowPass_Filter_Coef *
     VisionHelicopter_X.LowPassFilter_CSTATE_b;
   _rtXdot->LowPassFilter_CSTATE_b += VisionHelicopter_B.final_pitch;
 
@@ -572,12 +572,12 @@ void VisionHelicopter::VisionHelicopter_derivatives()
   _rtXdot->Integrator1_CSTATE = VisionHelicopter_B.vy_dot;
 
   // Derivatives for TransferFcn: '<S8>/Low Pass Filter'
-  _rtXdot->LowPassFilter_CSTATE_j = -0.83333333333333337 *
+  _rtXdot->LowPassFilter_CSTATE_j = -VisionHelicopter_P.LowPass_Filter_Coef *
     VisionHelicopter_X.LowPassFilter_CSTATE_j;
 
   // Derivatives for Integrator: '<S150>/Integrator'
-  lsat = (VisionHelicopter_X.Integrator_CSTATE <= -5.0);
-  usat = (VisionHelicopter_X.Integrator_CSTATE >= 5.0);
+  lsat = (VisionHelicopter_X.Integrator_CSTATE <= -VisionHelicopter_P.Integrator_Upper);
+  usat = (VisionHelicopter_X.Integrator_CSTATE >= VisionHelicopter_P.Integrator_Upper);
   if (((!lsat) && (!usat)) || (lsat && (VisionHelicopter_B.Sum > 0.0)) || (usat &&
        (VisionHelicopter_B.Sum < 0.0))) {
     _rtXdot->Integrator_CSTATE = VisionHelicopter_B.Sum;
@@ -592,9 +592,9 @@ void VisionHelicopter::VisionHelicopter_derivatives()
   _rtXdot->Filter_CSTATE = VisionHelicopter_B.FilterCoefficient;
 
   // Derivatives for TransferFcn: '<S4>/Low Pass Filter'
-  _rtXdot->LowPassFilter_CSTATE_c = -2.0 *
+  _rtXdot->LowPassFilter_CSTATE_c = -VisionHelicopter_P.Alt_Filter_Coef *
     VisionHelicopter_X.LowPassFilter_CSTATE_c;
-  _rtXdot->LowPassFilter_CSTATE_c += 10.0;
+  _rtXdot->LowPassFilter_CSTATE_c += VisionHelicopter_P.Alt_LowPass_Input;
 
   // Derivatives for SecondOrderIntegrator: '<Root>/z'
   if (VisionHelicopter_DW.z_MODE == 0) {
@@ -605,8 +605,8 @@ void VisionHelicopter::VisionHelicopter_derivatives()
   // End of Derivatives for SecondOrderIntegrator: '<Root>/z'
 
   // Derivatives for Integrator: '<S44>/Integrator'
-  lsat = (VisionHelicopter_X.Integrator_CSTATE_f <= -5.0);
-  usat = (VisionHelicopter_X.Integrator_CSTATE_f >= 5.0);
+  lsat = (VisionHelicopter_X.Integrator_CSTATE_f <= -VisionHelicopter_P.Integrator_Upper);
+  usat = (VisionHelicopter_X.Integrator_CSTATE_f >= VisionHelicopter_P.Integrator_Upper);
   if (((!lsat) && (!usat)) || (lsat && (VisionHelicopter_B.IntegralGain > 0.0)) ||
       (usat && (VisionHelicopter_B.IntegralGain < 0.0))) {
     _rtXdot->Integrator_CSTATE_f = VisionHelicopter_B.IntegralGain;
@@ -621,7 +621,7 @@ void VisionHelicopter::VisionHelicopter_derivatives()
   _rtXdot->Filter_CSTATE_l = VisionHelicopter_B.FilterCoefficient_a;
 
   // Derivatives for TransferFcn: '<S4>/Transfer Fcn'
-  _rtXdot->TransferFcn_CSTATE = -100.0 * VisionHelicopter_X.TransferFcn_CSTATE;
+  _rtXdot->TransferFcn_CSTATE = -VisionHelicopter_P.Filter_Coef * VisionHelicopter_X.TransferFcn_CSTATE;
   _rtXdot->TransferFcn_CSTATE += VisionHelicopter_B.Sum_g;
 
   // Derivatives for Integrator: '<Root>/vx_curr'
@@ -630,13 +630,13 @@ void VisionHelicopter::VisionHelicopter_derivatives()
   // Derivatives for TransferFcn: '<S7>/Low Pass Filter' incorporates:
   //   Constant: '<Root>/Constant1'
 
-  _rtXdot->LowPassFilter_CSTATE_d = -0.83333333333333337 *
+  _rtXdot->LowPassFilter_CSTATE_d = -VisionHelicopter_P.LowPass_Filter_Coef *
     VisionHelicopter_X.LowPassFilter_CSTATE_d;
-  _rtXdot->LowPassFilter_CSTATE_d++;
+  _rtXdot->LowPassFilter_CSTATE_d += VisionHelicopter_P.Vx_LowPass_Input;
 
   // Derivatives for Integrator: '<S97>/Integrator'
-  lsat = (VisionHelicopter_X.Integrator_CSTATE_k <= -5.0);
-  usat = (VisionHelicopter_X.Integrator_CSTATE_k >= 5.0);
+  lsat = (VisionHelicopter_X.Integrator_CSTATE_k <= -VisionHelicopter_P.Integrator_Upper);
+  usat = (VisionHelicopter_X.Integrator_CSTATE_k >= VisionHelicopter_P.Integrator_Upper);
   if (((!lsat) && (!usat)) || (lsat && (VisionHelicopter_B.Sum_d > 0.0)) ||
       (usat && (VisionHelicopter_B.Sum_d < 0.0))) {
     _rtXdot->Integrator_CSTATE_k = VisionHelicopter_B.Sum_d;

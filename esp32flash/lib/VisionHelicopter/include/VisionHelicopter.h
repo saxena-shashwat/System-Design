@@ -71,6 +71,37 @@ class VisionHelicopter final
   };
 
   // Block states (default storage) for system '<Root>'
+  
+  // Tunable parameters
+  struct P_VisionHelicopter_T {
+    real_T LowPass_Filter_Coef = 0.83333333333333337;
+    real_T PitchRoll_Kp = 7.0711;
+    real_T PitchRoll_Kd = -1.1909;
+    real_T RateLimit_Rise = 3.0;
+    real_T RateLimit_Fall = -3.0;
+    real_T Sat_Upper = 1.5;
+    real_T Sat_Lower = -1.5;
+    real_T Integrator_Upper = 5.0;
+    real_T Integrator_Lower = -5.0;
+    real_T Filter_Coef = 100.0;
+    real_T Alt_Filter_Coef = 2.0;
+    real_T Alt_LowPass_Input = 5.0; // For 5m alt setpoint, DC gain = 10/2 = 5
+    real_T Vx_LowPass_Input = 0.0;  // Exposed Vx reference input
+    real_T Thrust_Transfer_Gain = -10000.0;
+    real_T Gravity = 9.81;
+    real_T Thrust_Base_Gain = 0.75;
+    real_T Thrust_Rate_Rise = 60.0;
+    real_T Thrust_Rate_Fall = -60.0;
+    real_T Thrust_Sat_Upper = 20.0;
+    real_T Drag_Coef = 0.5;
+    real_T Pitch_Sat_Upper = 0.087266; // Changed from 0.87266 (50 deg) to 5 deg
+    real_T Pitch_Sat_Lower = -0.087266; // Changed from -0.87266 to -5 deg
+    real_T Hover_Thrust = 14.715;
+    real_T Plant_Actuator_Gain = 32.0;
+  };
+
+  P_VisionHelicopter_T VisionHelicopter_P;
+
   struct DW_VisionHelicopter_T {
     real_T PrevY;                      // '<S5>/Rate Limiter'
     real_T LastMajorTime;              // '<S5>/Rate Limiter'

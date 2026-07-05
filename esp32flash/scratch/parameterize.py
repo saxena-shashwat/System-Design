@@ -9,6 +9,11 @@ with open(cpp_file, 'r') as f:
 with open(h_file, 'r') as f:
     h_code = f.read()
 
+# First replace the hardcoded ++ for Vx reference
+for i in range(len(cpp_lines)):
+    if '_rtXdot->LowPassFilter_CSTATE_d++;' in cpp_lines[i]:
+        cpp_lines[i] = cpp_lines[i].replace('_rtXdot->LowPassFilter_CSTATE_d++;', '_rtXdot->LowPassFilter_CSTATE_d += VisionHelicopter_P.Vx_LowPass_Input;')
+
 replacements = {
     '0.83333333333333337': 'VisionHelicopter_P.LowPass_Filter_Coef',
     '7.0711': 'VisionHelicopter_P.PitchRoll_Kp',
@@ -36,14 +41,12 @@ replacements = {
 }
 
 def replace_tokens(line):
-    # Regex to match float literals exactly
     for num, repl in replacements.items():
         pattern = r'(?<![a-zA-Z0-9_.])' + re.escape(num) + r'(?![a-zA-Z0-9_.])'
         line = re.sub(pattern, repl, line)
     return line
 
 for i in range(len(cpp_lines)):
-    # skip ODE update function to avoid messing up ODE constants
     if 27 <= i <= 112:
         continue
     cpp_lines[i] = replace_tokens(cpp_lines[i])
@@ -62,7 +65,8 @@ struct_def = """
     real_T Integrator_Lower = -5.0;
     real_T Filter_Coef = 100.0;
     real_T Alt_Filter_Coef = 2.0;
-    real_T Alt_LowPass_Input = 10.0;
+    real_T Alt_LowPass_Input = 5.0; // For 5m alt setpoint, DC gain = 10/2 = 5
+    real_T Vx_LowPass_Input = 0.0;  // Exposed Vx reference input
     real_T Thrust_Transfer_Gain = -10000.0;
     real_T Gravity = 9.81;
     real_T Thrust_Base_Gain = 0.75;
@@ -70,8 +74,8 @@ struct_def = """
     real_T Thrust_Rate_Fall = -60.0;
     real_T Thrust_Sat_Upper = 20.0;
     real_T Drag_Coef = 0.5;
-    real_T Pitch_Sat_Upper = 0.87266;
-    real_T Pitch_Sat_Lower = -0.87266;
+    real_T Pitch_Sat_Upper = 0.087266; // Changed from 0.87266 (50 deg) to 5 deg
+    real_T Pitch_Sat_Lower = -0.087266; // Changed from -0.87266 to -5 deg
     real_T Hover_Thrust = 14.715;
     real_T Plant_Actuator_Gain = 32.0;
   };
@@ -79,8 +83,11 @@ struct_def = """
   P_VisionHelicopter_T VisionHelicopter_P;
 """
 
-if 'struct DW_VisionHelicopter_T {' in h_code:
+if 'struct DW_VisionHelicopter_T {' in h_code and 'struct P_VisionHelicopter_T' not in h_code:
     h_code = h_code.replace('struct DW_VisionHelicopter_T {', struct_def + '\n  struct DW_VisionHelicopter_T {')
+elif 'struct P_VisionHelicopter_T' in h_code:
+    # already parameterized, replace it
+    h_code = re.sub(r'struct P_VisionHelicopter_T \{.*?\};\n\n  P_VisionHelicopter_T VisionHelicopter_P;', struct_def.strip(), h_code, flags=re.DOTALL)
 
 with open(cpp_file, 'w') as f:
     f.writelines(cpp_lines)
